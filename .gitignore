@@ -1,0 +1,9 @@
+.DS_Store
+*.webloc
+node_modules/
+www/
+dist/
+build/
+vendor/
+__pycache__/
+*.pyc
