@@ -23,25 +23,36 @@
       <main class="home-grid" aria-label="Main tools">
         <button class="tool-card" data-open="concrete">
           <span class="tool-num">01</span>
-          <span class="tool-ico slab-ico"></span>
+          <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" aria-hidden="true">
+            <polygon points="20,12 54,12 62,44 10,44"/>
+          </svg>
           <span class="tool-title">Tapered Shape</span>
           <span class="tool-sub">Sloped / trapezoid shapes</span>
         </button>
         <button class="tool-card" data-open="radius">
           <span class="tool-num">02</span>
-          <span class="tool-ico radius-ico"></span>
+          <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" aria-hidden="true">
+            <circle cx="36" cy="28" r="20"/>
+            <path d="M16 28 H56"/>
+          </svg>
           <span class="tool-title">Radius / Circle</span>
           <span class="tool-sub">Arc + diameter</span>
         </button>
         <button class="tool-card" data-open="slope">
           <span class="tool-num">03</span>
-          <span class="tool-ico slope-ico"></span>
+          <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" aria-hidden="true">
+            <path d="M12 44 H58 V14 Z"/>
+            <path d="M18 39 H32"/>
+            <path d="M53 36 V22"/>
+          </svg>
           <span class="tool-title">Slope</span>
           <span class="tool-sub">Rise, run, angle</span>
         </button>
         <button class="tool-card" data-open="stairs">
           <span class="tool-num">04</span>
-          <span class="tool-ico stairs-ico"></span>
+          <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" aria-hidden="true">
+            <polyline points="10,44 24,44 24,34 38,34 38,24 52,24 52,14 62,14"/>
+          </svg>
           <span class="tool-title">Stairs</span>
           <span class="tool-sub">Simple layout</span>
         </button>
@@ -220,8 +231,8 @@
       <div class="panel">
         <div class="input-grid">
           <label>Total rise <span>in</span><input id="stairTotalRise" type="number" inputmode="decimal" placeholder="42"></label>
-          <label>Steps <span>count</span><input id="stairSteps" type="number" inputmode="numeric" placeholder="6"></label>
-          <label>Tread depth <span>in</span><input id="stairTread" type="number" inputmode="decimal" value="10"></label>
+          <label>Total run <span>ft</span><input id="stairTotalRunFt" type="number" inputmode="decimal" placeholder="5"></label>
+          <label>Preferred rise <span>in</span><input id="stairPreferredRise" type="number" inputmode="decimal" placeholder="7"></label>
         </div>
       </div>
       <div class="diagram stairs-diagram">
@@ -241,8 +252,10 @@
       </div>
       <p id="stairNotice" class="soft-notice" hidden></p>
       <div class="results">
-        <div class="result big"><span>Rise per step</span><strong id="stairRiseEach">--</strong><em>in</em></div>
-        <div class="result"><span>Total run</span><strong id="stairRun">--</strong><em>ft</em></div>
+        <div class="result big"><span>Recommended steps count</span><strong id="stairStepsOut">--</strong><em>steps</em></div>
+        <div class="result"><span>Actual rise per step</span><strong id="stairRiseEach">--</strong><em>in</em></div>
+        <div class="result"><span>Tread depth</span><strong id="stairTreadDepth">--</strong><em>in</em></div>
+        <div class="result"><span>Stair angle</span><strong id="stairAngle">--</strong><em>deg</em></div>
         <div class="result"><span>Stringer length</span><strong id="stairStringer">--</strong><em>ft</em></div>
       </div>
       <p class="disclaimer">Results are estimates only. Always follow local codes, drawings, site conditions, and professional judgment.</p>

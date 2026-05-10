@@ -159,15 +159,20 @@ function calcSlope() {
 
 function calcStairs() {
   const totalRise = n("stairTotalRise");
-  const steps = Math.max(0, Math.round(n("stairSteps")));
-  const tread = n("stairTread");
+  const totalRunFt = n("stairTotalRunFt");
+  const preferredRise = n("stairPreferredRise");
+  const totalRunIn = totalRunFt * 12;
+  const steps = totalRise > 0 && preferredRise > 0 ? Math.max(1, Math.round(totalRise / preferredRise)) : 0;
   const riseEach = steps > 0 ? totalRise / steps : 0;
-  const totalRunIn = steps > 0 ? tread * steps : 0;
+  const tread = steps > 0 ? totalRunIn / steps : 0;
   const stringerFt = Math.hypot(totalRise, totalRunIn) / 12;
+  const angle = totalRunIn > 0 && totalRise > 0 ? Math.atan(totalRise / totalRunIn) * 180 / Math.PI : 0;
+  $("stairStepsOut").textContent = steps > 0 ? String(steps) : "--";
   $("stairRiseEach").textContent = riseEach > 0 ? fmt(riseEach, 2) : "--";
-  $("stairRun").textContent = totalRunIn > 0 ? fmt(totalRunIn / 12, 2) : "--";
+  $("stairTreadDepth").textContent = tread > 0 ? fmt(tread, 2) : "--";
+  $("stairAngle").textContent = angle > 0 ? fmt(angle, 1) : "--";
   $("stairStringer").textContent = stringerFt > 0 ? fmt(stringerFt, 2) : "--";
-  drawStairs({ steps, riseEach, tread, totalRise, totalRunIn });
+  drawStairs({ steps, riseEach, tread, totalRise, totalRunIn, totalRunFt });
   updateStairNotice(riseEach, tread, steps);
 }
 
@@ -201,7 +206,9 @@ function drawStairs(data) {
   setText("stairRiseLabel", right + 8, top + (bottom - top) / 2, "Total rise");
   setText("stairTreadLabel", left + stepW / 2 - 14, bottom + 35, data.tread > 0 ? `${fmt(data.tread, 1)} in tread` : "Tread");
   setText("stairStepRiseLabel", left + stepW + 9, bottom - stepH / 2 + 4, data.riseEach > 0 ? `${fmt(data.riseEach, 1)} in rise` : "Rise");
-  $("stairCountLabel").textContent = inputSteps > visibleSteps ? `${visibleSteps} of ${inputSteps} steps shown` : `${visibleSteps} steps shown`;
+  $("stairCountLabel").textContent = inputSteps > visibleSteps
+    ? `${visibleSteps} of ${inputSteps} steps shown - simplified sketch`
+    : `${visibleSteps} recommended steps`;
 }
 
 function updateStairNotice(riseEach, tread, steps) {
