@@ -25,6 +25,7 @@ function whole(value) {
 function show(id) {
   screens.forEach((screen) => screen.classList.toggle("active", screen.id === id));
   window.scrollTo(0, 0);
+  recalcAll();
 }
 
 function calcConcrete() {
@@ -276,7 +277,10 @@ function setupNotes() {
 }
 
 function setupInputs() {
-  document.querySelectorAll("input").forEach((input) => input.addEventListener("input", recalcAll));
+  document.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("input", recalcAll);
+    input.addEventListener("change", recalcAll);
+  });
 }
 
 setupNavigation();
