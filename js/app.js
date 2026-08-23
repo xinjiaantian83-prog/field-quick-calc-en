@@ -1,8 +1,22 @@
 const $ = (id) => document.getElementById(id);
 const screens = [...document.querySelectorAll(".screen")];
 const notesKey = "fieldQuickCalc_notes_v1";
+const menuVisibilityKey = "fieldQuickCalc_homeMenuVisibility_v1";
+const menuSettingsKey = "fieldQuickCalc_homeMenuSettings_v2";
+const homeMenuItems = [
+  { id: "ordinary", label: "Tapered Shape" },
+  { id: "radiusCircle", label: "Radius & Arc" },
+  { id: "slope", label: "Slope & Pitch" },
+  { id: "stairs", label: "Stair Layout" },
+  { id: "density", label: "Material Weight Guide" },
+  { id: "notes", label: "Jobsite Notes" }
+];
 let radiusMode = "arc";
 let taperSide = "left";
+let menuSettings = loadMenuSettings();
+let menuVisibility = menuSettings.visibility;
+let menuOrder = menuSettings.order;
+let customizeDrag = null;
 
 function n(id) {
   const value = parseFloat($(id)?.value);
@@ -26,6 +40,233 @@ function show(id) {
   screens.forEach((screen) => screen.classList.toggle("active", screen.id === id));
   window.scrollTo(0, 0);
   recalcAll();
+}
+
+function getMenuElement(itemId) {
+  return document.querySelector(`[data-menu-id="${itemId}"]`);
+}
+
+function getAvailableMenuItems() {
+  return getOrderedMenuItems().filter((item) => getMenuElement(item.id));
+}
+
+function getDefaultMenuVisibility() {
+  return homeMenuItems.reduce((settings, item) => {
+    settings[item.id] = true;
+    return settings;
+  }, {});
+}
+
+function getDefaultMenuOrder() {
+  return homeMenuItems.map((item) => item.id);
+}
+
+function normalizeMenuOrder(savedOrder) {
+  const defaults = getDefaultMenuOrder();
+  const knownIds = new Set(defaults);
+  const normalized = Array.isArray(savedOrder)
+    ? savedOrder.filter((id, index, order) => knownIds.has(id) && order.indexOf(id) === index)
+    : [];
+  const missing = defaults.filter((id) => !normalized.includes(id));
+  return [...normalized, ...missing];
+}
+
+function getOrderedMenuItems() {
+  return menuOrder
+    .map((id) => homeMenuItems.find((item) => item.id === id))
+    .filter(Boolean);
+}
+
+function parseStoredJson(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "null");
+  } catch {
+    return null;
+  }
+}
+
+function loadMenuSettings() {
+  const defaults = getDefaultMenuVisibility();
+  const savedSettings = parseStoredJson(menuSettingsKey);
+  const legacyVisibility = parseStoredJson(menuVisibilityKey);
+  const savedVisibility = savedSettings?.visibility || legacyVisibility || {};
+
+  return {
+    visibility: { ...defaults, ...savedVisibility },
+    order: normalizeMenuOrder(savedSettings?.order)
+  };
+}
+
+function saveMenuSettings() {
+  menuSettings = {
+    visibility: menuVisibility,
+    order: menuOrder
+  };
+  localStorage.setItem(menuSettingsKey, JSON.stringify(menuSettings));
+  localStorage.setItem(menuVisibilityKey, JSON.stringify(menuVisibility));
+}
+
+function getVisibleAvailableCount() {
+  return getAvailableMenuItems().filter((item) => menuVisibility[item.id] !== false).length;
+}
+
+function normalizeMenuVisibility() {
+  const available = getAvailableMenuItems();
+  if (available.length === 0 || getVisibleAvailableCount() > 0) return;
+  menuVisibility[available[0].id] = true;
+  saveMenuSettings();
+}
+
+function applyMenuOrder() {
+  const host = document.querySelector(".home-grid");
+  if (!host) return;
+
+  getAvailableMenuItems().forEach((item, index) => {
+    const element = getMenuElement(item.id);
+    element.style.order = String(index + 1);
+    host.appendChild(element);
+  });
+
+  [...host.children].forEach((element) => {
+    if (!element.dataset.menuId) element.style.order = "999";
+  });
+
+  document.querySelectorAll(".bottom-actions").forEach((container) => {
+    const hasVisibleItem = [...container.children].some((child) => !child.hidden);
+    container.hidden = !hasVisibleItem;
+  });
+}
+
+function applyMenuVisibility() {
+  normalizeMenuVisibility();
+  applyMenuOrder();
+  getOrderedMenuItems().forEach((item) => {
+    const element = getMenuElement(item.id);
+    if (!element) return;
+    element.hidden = menuVisibility[item.id] === false;
+  });
+}
+
+function setCustomizeNotice(message = "") {
+  const notice = $("customizeNotice");
+  if (notice) notice.textContent = message;
+}
+
+function renderCustomizeOptions() {
+  const list = $("menuCustomizeList");
+  if (!list) return;
+  list.innerHTML = getOrderedMenuItems().map((item) => {
+    const available = Boolean(getMenuElement(item.id));
+    const checked = menuVisibility[item.id] !== false && available;
+    const note = available ? "Show on home screen" : "Tool not available";
+    return `
+      <label class="customize-option${available ? "" : " is-unavailable"}" data-menu-item="${item.id}">
+        <span class="drag-handle" aria-hidden="true">☰</span>
+        <input type="checkbox" data-menu-toggle="${item.id}" ${checked ? "checked" : ""} ${available ? "" : "disabled"}>
+        <span>
+          <strong>${item.label}</strong>
+          <small>${note}</small>
+        </span>
+      </label>
+    `;
+  }).join("");
+
+  list.querySelectorAll("[data-menu-toggle]").forEach((input) => {
+    input.addEventListener("change", () => {
+      const itemId = input.dataset.menuToggle;
+      if (!input.checked && getVisibleAvailableCount() <= 1) {
+        input.checked = true;
+        setCustomizeNotice("Keep at least one tool visible.");
+        return;
+      }
+
+      menuVisibility[itemId] = input.checked;
+      saveMenuSettings();
+      applyMenuVisibility();
+      setCustomizeNotice("");
+    });
+  });
+
+  setupCustomizeDrag(list);
+}
+
+function setupCustomizeDrag(list) {
+  list.querySelectorAll(".customize-option").forEach((option) => {
+    option.querySelector(".drag-handle")?.addEventListener("pointerdown", startCustomizeDrag);
+  });
+}
+
+function startCustomizeDrag(event) {
+  event.preventDefault();
+
+  const option = event.currentTarget.closest(".customize-option");
+  customizeDrag = {
+    option,
+    pointerId: event.pointerId,
+    startY: event.clientY,
+    dragging: false
+  };
+
+  option.setPointerCapture(event.pointerId);
+  option.addEventListener("pointermove", moveCustomizeDrag);
+  option.addEventListener("pointerup", endCustomizeDrag);
+  option.addEventListener("pointercancel", endCustomizeDrag);
+}
+
+function moveCustomizeDrag(event) {
+  if (!customizeDrag || event.pointerId !== customizeDrag.pointerId) return;
+  const distance = Math.abs(event.clientY - customizeDrag.startY);
+  if (!customizeDrag.dragging && distance < 7) return;
+
+  event.preventDefault();
+  customizeDrag.dragging = true;
+  const draggingOption = customizeDrag.option;
+  const list = draggingOption.parentElement;
+  draggingOption.classList.add("is-dragging");
+
+  const target = [...list.querySelectorAll(".customize-option:not(.is-dragging)")]
+    .find((option) => {
+      const rect = option.getBoundingClientRect();
+      return event.clientY < rect.top + rect.height / 2;
+    });
+
+  if (target) {
+    list.insertBefore(draggingOption, target);
+  } else {
+    list.appendChild(draggingOption);
+  }
+}
+
+function endCustomizeDrag(event) {
+  if (!customizeDrag || event.pointerId !== customizeDrag.pointerId) return;
+
+  const { option, dragging } = customizeDrag;
+  option.classList.remove("is-dragging");
+  option.releasePointerCapture(event.pointerId);
+  option.removeEventListener("pointermove", moveCustomizeDrag);
+  option.removeEventListener("pointerup", endCustomizeDrag);
+  option.removeEventListener("pointercancel", endCustomizeDrag);
+
+  if (dragging) {
+    menuOrder = [...$("menuCustomizeList").querySelectorAll("[data-menu-item]")]
+      .map((item) => item.dataset.menuItem);
+    saveMenuSettings();
+    applyMenuVisibility();
+    setCustomizeNotice("Menu order saved.");
+  }
+
+  customizeDrag = null;
+}
+
+function openCustomizeDialog() {
+  renderCustomizeOptions();
+  setCustomizeNotice("");
+  $("customizeDialog").hidden = false;
+}
+
+function closeCustomizeDialog() {
+  $("customizeDialog").hidden = true;
+  $("customizeMenuBtn")?.focus();
 }
 
 function calcConcrete() {
@@ -240,6 +481,18 @@ function setupNavigation() {
   });
 }
 
+function setupCustomizeMenu() {
+  $("customizeMenuBtn")?.addEventListener("click", openCustomizeDialog);
+  $("closeCustomizeBtn")?.addEventListener("click", closeCustomizeDialog);
+  $("customizeDialog")?.addEventListener("click", (event) => {
+    if (event.target === $("customizeDialog")) closeCustomizeDialog();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !$("customizeDialog")?.hidden) closeCustomizeDialog();
+  });
+  applyMenuVisibility();
+}
+
 function setupRadiusMode() {
   document.querySelectorAll("[data-radius-mode]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -284,6 +537,7 @@ function setupInputs() {
 }
 
 setupNavigation();
+setupCustomizeMenu();
 setupRadiusMode();
 setupTaperSide();
 setupNotes();

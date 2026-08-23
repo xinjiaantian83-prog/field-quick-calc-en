@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Field Quick Calc</title>
   <link rel="icon" href="icons/icon.png">
   <link rel="apple-touch-icon" href="icons/icon.png">
@@ -16,58 +16,77 @@
         <div>
           <p class="eyebrow">GENBA TOOLBOX</p>
           <h1>Field Quick Calc</h1>
-          <p class="tagline">Fast numbers for the jobsite.</p>
+          <p class="tagline">Construction math for the jobsite.</p>
         </div>
+        <button id="customizeMenuBtn" class="customize-button" type="button" aria-haspopup="dialog" aria-controls="customizeDialog">
+          <span aria-hidden="true">⚙</span>
+          <span>Customize</span>
+        </button>
       </header>
 
       <main class="home-grid" aria-label="Main tools">
-        <button class="tool-card" data-open="concrete">
+        <button class="tool-card" data-open="concrete" data-menu-id="ordinary">
           <span class="tool-num">01</span>
           <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" fill="none" stroke="#eafff6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polygon points="20,12 54,12 62,44 10,44" fill="none"/>
           </svg>
           <span class="tool-title">Tapered Shape</span>
-          <span class="tool-sub">Sloped / trapezoid shapes</span>
+          <span class="tool-sub">Widths at set heights</span>
         </button>
-        <button class="tool-card" data-open="radius">
+        <button class="tool-card" data-open="radius" data-menu-id="radiusCircle">
           <span class="tool-num">02</span>
           <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" fill="none" stroke="#eafff6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="36" cy="28" r="20" fill="none"/>
             <path d="M16 28 H56" fill="none"/>
           </svg>
-          <span class="tool-title">Radius / Circle</span>
-          <span class="tool-sub">Arc + diameter</span>
+          <span class="tool-title">Radius &amp; Arc</span>
+          <span class="tool-sub">Chord, rise &amp; circle</span>
         </button>
-        <button class="tool-card" data-open="slope">
+        <button class="tool-card" data-open="slope" data-menu-id="slope">
           <span class="tool-num">03</span>
           <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" fill="none" stroke="#eafff6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 44 H58 V14 Z" fill="none"/>
           </svg>
-          <span class="tool-title">Slope</span>
-          <span class="tool-sub">Rise, run, angle</span>
+          <span class="tool-title">Slope &amp; Pitch</span>
+          <span class="tool-sub">Rise, run, angle &amp; pitch</span>
         </button>
-        <button class="tool-card" data-open="stairs">
+        <button class="tool-card" data-open="stairs" data-menu-id="stairs">
           <span class="tool-num">04</span>
           <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" fill="none" stroke="#eafff6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="10,44 24,44 24,34 38,34 38,24 52,24 52,14 62,14" fill="none"/>
           </svg>
-          <span class="tool-title">Stairs</span>
-          <span class="tool-sub">Simple layout</span>
+          <span class="tool-title">Stair Layout</span>
+          <span class="tool-sub">Rise, tread &amp; angle</span>
         </button>
       </main>
 
       <nav class="bottom-actions" aria-label="More tools">
-        <button data-open="materials">Material Weight Table</button>
-        <button data-open="notes">Notes</button>
+        <button data-open="materials" data-menu-id="density">Material Weight Guide</button>
+        <button data-open="notes" data-menu-id="notes">Jobsite Notes</button>
+        <a href="privacy.html">Privacy Policy</a>
       </nav>
+
+      <div id="customizeDialog" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="customizeTitle" hidden>
+        <section class="modal-panel">
+          <div class="modal-head">
+            <div>
+              <p class="eyebrow">Home menu</p>
+              <h2 id="customizeTitle">Customize Home</h2>
+            </div>
+            <button id="closeCustomizeBtn" class="icon-button" type="button" aria-label="Close">×</button>
+          </div>
+          <div id="menuCustomizeList" class="customize-list"></div>
+          <p id="customizeNotice" class="customize-notice" role="status" aria-live="polite"></p>
+        </section>
+      </div>
     </section>
 
     <section id="concrete" class="screen">
-      <button class="back" data-open="home">Back</button>
+      <button class="back" data-open="home">← Back</button>
       <header class="tool-header">
         <p class="eyebrow">Angled / uneven shapes</p>
         <h2>Tapered Shape</h2>
-        <p>Pick the side that runs out, then check widths by height.</p>
+        <p>Choose which side tapers, then check widths at different heights.</p>
       </header>
 
       <div class="slope-switch" aria-label="Taper side">
@@ -129,11 +148,11 @@
     </section>
 
     <section id="radius" class="screen">
-      <button class="back" data-open="home">Back</button>
+      <button class="back" data-open="home">← Back</button>
       <header class="tool-header">
         <p class="eyebrow">Round layouts</p>
-        <h2>Radius / Circle</h2>
-        <p>Arc length from chord and height, plus circle checks.</p>
+        <h2>Radius &amp; Arc</h2>
+        <p>Calculate arc length and radius from chord and rise, or check a full circle.</p>
       </header>
 
       <div class="segmented">
@@ -145,7 +164,7 @@
         <div class="panel">
           <div class="input-grid">
             <label>Chord <span>ft</span><input id="arcChordFt" type="number" inputmode="decimal" placeholder="8"></label>
-            <label>Height <span>in</span><input id="arcHeightIn" type="number" inputmode="decimal" placeholder="12"></label>
+            <label>Rise <span>in</span><input id="arcHeightIn" type="number" inputmode="decimal" placeholder="12"></label>
           </div>
         </div>
         <div class="diagram">
@@ -154,7 +173,7 @@
             <line x1="70" y1="125" x2="290" y2="125" class="line"/>
             <line x1="180" y1="125" x2="180" y2="56" class="measure"/>
             <text x="155" y="148">Chord</text>
-            <text x="190" y="91">Height</text>
+            <text x="190" y="91">Rise</text>
             <text x="140" y="48">Arc length</text>
           </svg>
         </div>
@@ -188,11 +207,11 @@
     </section>
 
     <section id="slope" class="screen">
-      <button class="back" data-open="home">Back</button>
+      <button class="back" data-open="home">← Back</button>
       <header class="tool-header">
         <p class="eyebrow">Roof / ramp / driveway</p>
-        <h2>Slope</h2>
-        <p>Quick slope check from rise and run.</p>
+        <h2>Slope &amp; Pitch</h2>
+        <p>Calculate slope length, angle, and pitch from rise and run.</p>
       </header>
       <div class="panel">
         <div class="input-grid">
@@ -214,17 +233,17 @@
       <div class="results">
         <div class="result big"><span>Slope length</span><strong id="slopeLength">--</strong><em>ft</em></div>
         <div class="result"><span>Angle</span><strong id="slopeAngle">--</strong><em>deg</em></div>
-        <div class="result"><span>Pitch</span><strong id="slopePitch">--</strong><em>in / ft</em></div>
+        <div class="result"><span>Pitch</span><strong id="slopePitch">--</strong><em>in/ft</em></div>
       </div>
       <p class="disclaimer">Results are estimates only. Always follow local codes, drawings, site conditions, and professional judgment.</p>
     </section>
 
     <section id="stairs" class="screen">
-      <button class="back" data-open="home">Back</button>
+      <button class="back" data-open="home">← Back</button>
       <header class="tool-header">
         <p class="eyebrow">Deck / outdoor steps</p>
-        <h2>Stairs</h2>
-        <p>Simple stair layout estimate.</p>
+        <h2>Stair Layout</h2>
+        <p>Estimate step count, tread depth, stringer length, and angle.</p>
       </header>
       <div class="panel">
         <div class="input-grid">
@@ -260,11 +279,11 @@
     </section>
 
     <section id="materials" class="screen">
-      <button class="back" data-open="home">Back</button>
+      <button class="back" data-open="home">← Back</button>
       <header class="tool-header">
         <p class="eyebrow">Quick reference</p>
-        <h2>Material Weight Table</h2>
-        <p>Typical field estimates. Confirm actual supplier data.</p>
+        <h2>Material Weight Guide</h2>
+        <p>Typical field weights for quick estimates. Confirm supplier specs.</p>
       </header>
       <div class="table-card">
         <div><strong>Concrete</strong><span>140 - 150 lb / cu ft</span></div>
@@ -277,11 +296,11 @@
     </section>
 
     <section id="notes" class="screen">
-      <button class="back" data-open="home">Back</button>
+      <button class="back" data-open="home">← Back</button>
       <header class="tool-header">
         <p class="eyebrow">Job notes</p>
-        <h2>Notes</h2>
-        <p>Saved on this device.</p>
+        <h2>Jobsite Notes</h2>
+        <p>Save measurements and cut notes on this device.</p>
       </header>
       <textarea id="notesText" class="notes" placeholder="Measurements, cut notes, bag counts..."></textarea>
       <button id="clearNotes" class="danger">Clear notes</button>

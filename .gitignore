@@ -7,3 +7,24 @@ build/
 vendor/
 __pycache__/
 *.pyc
+
+# Native build caches and local signing configuration
+android/.gradle/
+android/.idea/
+android/local.properties
+android/keystore.properties
+android/*.jks
+android/app/build/
+android/app/release/
+ios/**/xcuserdata/
+ios/DerivedData/
+
+# Local release binaries (kept outside Git)
+release/*.aab
+release/*.ipa
+release/*.xcarchive/
+release/ios-*-export/
+
+# Source captures used to compose the final store artwork
+store-assets/raw-ios/
+store-assets/raw-ios-web/

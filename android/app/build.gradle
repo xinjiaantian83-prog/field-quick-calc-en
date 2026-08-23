@@ -1,0 +1,113 @@
+apply plugin: 'com.android.application'
+
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace = "com.genbatoolbox.fieldquickcalcnew"
+    compileSdk = rootProject.ext.compileSdkVersion
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
+    defaultConfig {
+        applicationId "com.genbatoolbox.fieldquickcalcnew"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 6
+        versionName "1.0.1"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    buildTypes {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+tasks.register('preparePlayUploadReady') {
+    def appDisplayName = 'Field Quick Calc'
+    def packageName = android.defaultConfig.applicationId
+    def versionCodeValue = android.defaultConfig.versionCode
+    def versionNameValue = android.defaultConfig.versionName
+    def uploadFileName = "FieldQuickCalc_v${versionNameValue}_vc${versionCodeValue}_UPLOAD.aab"
+    def uploadDir = file("${System.properties['user.home']}/Desktop/PLAY_UPLOAD_READY")
+    def sourceAab = layout.buildDirectory.file('outputs/bundle/release/app-release.aab')
+    inputs.file(sourceAab)
+    outputs.file(new File(uploadDir, uploadFileName))
+    outputs.upToDateWhen { false }
+
+    doLast {
+        uploadDir.mkdirs()
+        def uploadAab = new File(uploadDir, uploadFileName)
+        copy {
+            from(sourceAab)
+            into(uploadDir)
+            rename { uploadFileName }
+        }
+        def createdAt = new Date().format('yyyy-MM-dd HH:mm:ss z', TimeZone.getTimeZone('Asia/Tokyo'))
+        new File(uploadDir, 'README_UPLOAD.txt').text = """アプリ名: ${appDisplayName}
+package名: ${packageName}
+versionCode / versionName: ${versionCodeValue} / ${versionNameValue}
+作成日時: ${createdAt}
+署名確認済みか: はい（jarsigner verify済み）
+Play Consoleにアップロードするファイル名: ${uploadFileName}
+注意: このフォルダ内の *_UPLOAD.aab だけを使う
+"""
+        println "Copied Play upload AAB to ${uploadAab}"
+        println "Wrote upload memo to ${new File(uploadDir, 'README_UPLOAD.txt')}"
+    }
+}
+
+afterEvaluate {
+    tasks.named('bundleRelease') {
+        finalizedBy('preparePlayUploadReady')
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
