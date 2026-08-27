@@ -13,22 +13,57 @@ construction,contractor,jobsite,slope,stair,radius,arc,pitch,chord,field,calcula
 
 **Description**
 
-Field Quick Calc is a practical construction calculator for contractors, tradespeople, installers, and DIY projects.
+Field Quick Calc is a practical construction calculator built for contractors, carpenters, builders, installers, and DIY users who need fast answers at the jobsite.
 
-Run common jobsite checks without switching between formulas or separate tools. Enter field measurements and quickly estimate tapered widths, slope length, angle, pitch, radius, arc length, stair layout, and material weights.
+Work with feet and inches, check slope and roof pitch, calculate radius and arc measurements, plan stair layouts, and prepare common field dimensions—all from one focused tool.
 
-TOOLS INCLUDED
+FAST JOBSITE CALCULATIONS
 
-• Tapered Shape — check widths at different heights for sloped or uneven shapes
-• Radius & Arc — calculate arc length and estimated radius from chord and rise, or check a full circle
-• Slope & Pitch — calculate slope length, angle, and pitch from rise and run
-• Stair Layout — estimate step count, tread depth, stringer length, and stair angle
-• Material Weight Guide — quick reference for common field materials
-• Jobsite Notes — keep measurements, cut notes, and material counts on the device
+• Feet and Inches
+Handle common field measurements in feet and inches without constantly switching between separate calculators.
 
-Built for fast use on the jobsite with a clear, high-contrast interface and US customary units.
+• Slope, Angle and Roof Pitch
+Enter rise and run to check slope length, angle, and pitch in inches per foot. Useful for roofs, ramps, driveways, drainage, framing, and general layout work.
 
-Results are estimates only. Always follow local codes, project drawings, manufacturer specifications, site conditions, and professional judgment.
+• Radius and Arc Calculator
+Calculate arc length and estimated radius from chord and height measurements. Use the circle tools for diameter, circumference, radius, and area checks. Complex formulas are simplified into a few taps.
+
+• Stair Layout
+Estimate step count, actual rise per step, tread depth, total run, and stair angle from your project dimensions to help speed up your framing and layout planning.
+
+• Tapered Shape Checks
+Check changing widths at different heights for tapered, sloped, and uneven shapes.
+
+• Material Weight Reference
+Quickly review common material weights while planning transport, handling, and jobsite work.
+
+• Jobsite Notes
+Keep simple measurements and reminders alongside your calculation tools.
+
+BUILT FOR FIELD WORK
+
+Field Quick Calc combines the functions of a construction calculator, slope calculator, arc calculator, radius calculator, stair calculator, roof pitch calculator, and DIY calculator in one straightforward app.
+
+It can serve as a compact carpenter tool for framing and layout, a contractor calculator for quick jobsite checks, or a practical DIY calc for home projects.
+
+OFFLINE COMPATIBILITY
+
+Core calculation tools work offline after installation, so you can use Field Quick Calc in workshops, unfinished buildings, remote jobsites, and other locations with limited connectivity.
+
+WHY FIELD QUICK CALC?
+
+• Designed for contractors, carpenters, and DIY users
+• Supports practical feet and inches workflows
+• Fast slope, angle, and roof pitch checks
+• Radius, circle, chord, and arc calculations
+• Simple stair and tapered-shape layouts
+• Clear inputs and readable results
+• No complicated scientific calculator workflow
+• Core calculators available offline
+
+Field Quick Calc helps reduce repeated manual calculations and keeps frequently used construction tools in one place.
+
+Calculation results are estimates and reference values. Always verify measurements and follow project drawings, manufacturer documentation, engineering requirements, local codes, site conditions, and professional judgment before construction or material ordering.
 
 **Release notes**
 
@@ -44,23 +79,57 @@ Construction calculator for slope, stairs, radius, arc and field layout.
 
 **Full description**
 
-Field Quick Calc is a practical construction calculator for contractors, tradespeople, installers, and DIY projects.
+Field Quick Calc is a practical construction calculator built for contractors, carpenters, builders, installers, and DIY users who need fast answers at the jobsite.
 
-Use one clear jobsite app for common field checks:
+Work with feet and inches, check slope and roof pitch, calculate radius and arc measurements, plan stair layouts, and prepare common field dimensions—all from one focused tool.
 
-• Check tapered widths at different heights
-• Calculate slope length, angle, and pitch from rise and run
-• Calculate radius and arc length from chord and rise
-• Check circumference, radius, and area from a circle diameter
-• Estimate stair count, tread depth, stringer length, and angle
-• Reference typical material weights
-• Save jobsite measurements, cut notes, and material counts on your device
+FAST JOBSITE CALCULATIONS
 
-The high-contrast black and green interface is designed for quick use in the field. Inputs and results use familiar US jobsite terms such as ft, in, deg, in/ft, rise, run, pitch, tread, chord, radius, and arc.
+• Feet and Inches
+Handle common field measurements in feet and inches without constantly switching between separate calculators.
 
-Field Quick Calc is useful for deck work, outdoor steps, ramps, driveways, roofs, curved layouts, sloped forms, and general construction checks.
+• Slope, Angle and Roof Pitch
+Enter rise and run to check slope length, angle, and pitch in inches per foot. Useful for roofs, ramps, driveways, drainage, framing, and general layout work.
 
-Results are estimates only. Always follow local codes, project drawings, manufacturer specifications, site conditions, and professional judgment.
+• Radius and Arc Calculator
+Calculate arc length and estimated radius from chord and height measurements. Use the circle tools for diameter, circumference, radius, and area checks. Complex formulas are simplified into a few taps.
+
+• Stair Layout
+Estimate step count, actual rise per step, tread depth, total run, and stair angle from your project dimensions to help speed up your framing and layout planning.
+
+• Tapered Shape Checks
+Check changing widths at different heights for tapered, sloped, and uneven shapes.
+
+• Material Weight Reference
+Quickly review common material weights while planning transport, handling, and jobsite work.
+
+• Jobsite Notes
+Keep simple measurements and reminders alongside your calculation tools.
+
+BUILT FOR FIELD WORK
+
+Field Quick Calc combines the functions of a construction calculator, slope calculator, arc calculator, radius calculator, stair calculator, roof pitch calculator, and DIY calculator in one straightforward app.
+
+It can serve as a compact carpenter tool for framing and layout, a contractor calculator for quick jobsite checks, or a practical DIY calc for home projects.
+
+OFFLINE COMPATIBILITY
+
+Core calculation tools work offline after installation, so you can use Field Quick Calc in workshops, unfinished buildings, remote jobsites, and other locations with limited connectivity.
+
+WHY FIELD QUICK CALC?
+
+• Designed for contractors, carpenters, and DIY users
+• Supports practical feet and inches workflows
+• Fast slope, angle, and roof pitch checks
+• Radius, circle, chord, and arc calculations
+• Simple stair and tapered-shape layouts
+• Clear inputs and readable results
+• No complicated scientific calculator workflow
+• Core calculators available offline
+
+Field Quick Calc helps reduce repeated manual calculations and keeps frequently used construction tools in one place.
+
+Calculation results are estimates and reference values. Always verify measurements and follow project drawings, manufacturer documentation, engineering requirements, local codes, site conditions, and professional judgment before construction or material ordering.
 
 **Release notes**
 
