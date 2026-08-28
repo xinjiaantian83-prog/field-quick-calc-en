@@ -499,17 +499,13 @@ textarea:focus {
   font-size: 12px;
 }
 
-.rebar-bend-fields {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(120, 151, 138, .3);
-}
-
-.rebar-bend-fields[hidden] {
-  display: none;
+.rebar-section-title {
+  margin-top: 14px;
+  padding: 8px 0 8px 12px;
+  border-left: 5px solid #ffc35c;
+  color: #effff8;
+  font-size: 15px;
+  font-weight: 900;
 }
 
 .rebar-diagram svg {
@@ -517,38 +513,33 @@ textarea:focus {
   height: auto;
 }
 
-.rebar-concrete {
-  fill: rgba(130, 151, 142, .12);
-  stroke: rgba(168, 190, 181, .65);
+.rebar-piece-line {
+  fill: none;
+  stroke: #62b8ff;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px rgba(98, 184, 255, .22));
+}
+
+.rebar-bend-dot {
+  fill: #ffd266;
+  stroke: #ffb968;
   stroke-width: 2;
 }
 
-.rebar-secondary {
-  stroke: #62c8d2;
-  stroke-width: 4;
-  stroke-linecap: round;
-}
-
-.rebar-l-line {
-  fill: none;
-  stroke: #2effa0;
-  stroke-width: 11;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 0 5px rgba(46, 255, 160, .22));
-}
-
-.rebar-bend-mark {
-  fill: none;
-  stroke: #ffc35c;
-  stroke-width: 4;
-  stroke-dasharray: 5 5;
-}
-
 .rebar-diagram text {
-  fill: #b9d2c8;
   font-size: 12px;
   font-weight: 800;
+}
+
+.rebar-dimension { fill: #4aa3ff; }
+.rebar-bend-text,
+.rebar-total { fill: #ffe09a; }
+.rebar-empty { fill: #8da79c; }
+
+.rebar-results .scrap {
+  border-color: rgba(255, 195, 92, .28);
 }
 
 .rebar-error {
@@ -565,7 +556,7 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
-.rebar-input-panel .input-grid {
+  .rebar-input-panel .input-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }

@@ -46,25 +46,25 @@
     return size.weightKgM / 1000;
   }
 
-  function countAtMaximumSpacing(clearLengthMm, spacingMm) {
-    if (clearLengthMm <= EPSILON_MM || spacingMm <= EPSILON_MM) return 0;
-    return Math.ceil((clearLengthMm - EPSILON_MM) / spacingMm) + 1;
+  function countAtSpacing(lengthMm, spacingMm) {
+    if (lengthMm <= EPSILON_MM || spacingMm <= EPSILON_MM) return 0;
+    return Math.floor((lengthMm + EPSILON_MM) / spacingMm) + 1;
   }
 
   function calculateStock(cutLengthMm, pieceCount, stockLengthMm) {
     if (cutLengthMm <= EPSILON_MM || pieceCount < 1 || stockLengthMm <= EPSILON_MM) {
-      return { piecesPerBar: 0, barsRequired: 0, remainingLengthMm: 0, remainingPerFullBarMm: 0 };
+      return { piecesPerBar: 0, barsRequired: 0, remainingPerBarMm: 0, totalRemainingMm: 0 };
     }
     const piecesPerBar = Math.floor((stockLengthMm + EPSILON_MM) / cutLengthMm);
     if (piecesPerBar < 1) {
-      return { piecesPerBar: 0, barsRequired: 0, remainingLengthMm: 0, remainingPerFullBarMm: 0 };
+      return { piecesPerBar: 0, barsRequired: 0, remainingPerBarMm: 0, totalRemainingMm: 0 };
     }
     const barsRequired = Math.ceil(pieceCount / piecesPerBar);
     return {
       piecesPerBar,
       barsRequired,
-      remainingLengthMm: Math.max(0, barsRequired * stockLengthMm - pieceCount * cutLengthMm),
-      remainingPerFullBarMm: Math.max(0, stockLengthMm - piecesPerBar * cutLengthMm)
+      remainingPerBarMm: Math.max(0, stockLengthMm - piecesPerBar * cutLengthMm),
+      totalRemainingMm: Math.max(0, (stockLengthMm - piecesPerBar * cutLengthMm) * barsRequired)
     };
   }
 
@@ -77,17 +77,21 @@
     const coverMm = lengthToMm(input.cover, smallUnit);
     const spacingMm = lengthToMm(input.spacing, smallUnit);
     const stockLengthMm = lengthToMm(input.stockLength, lengthUnit);
-    const clearWallLengthMm = Math.max(0, wallLengthMm - 2 * coverMm);
-    const pieceCount = countAtMaximumSpacing(clearWallLengthMm, spacingMm);
+    const pieceCount = countAtSpacing(wallLengthMm, spacingMm);
     let cutLengthMm = 0;
-    let bendAdjustmentMm = 0;
+    let bendAllowanceMm = 0;
+    let verticalEffectiveMm = 0;
+    let horizontalEffectiveMm = 0;
 
     if (input.mode === "lshape") {
       const verticalMm = lengthToMm(input.verticalLeg, lengthUnit);
       const horizontalMm = lengthToMm(input.horizontalLeg, lengthUnit);
-      const adjustmentMm = lengthToMm(input.bendAdjustment, smallUnit);
-      bendAdjustmentMm = input.bendMethod === "deduction" ? -adjustmentMm : adjustmentMm;
-      cutLengthMm = Math.max(0, verticalMm - coverMm) + Math.max(0, horizontalMm - coverMm) + bendAdjustmentMm;
+      verticalEffectiveMm = verticalMm - coverMm;
+      horizontalEffectiveMm = horizontalMm - coverMm;
+      bendAllowanceMm = size
+        ? (system === "imperial" ? lengthToMm(size.bendAllowanceIn, "in") : size.bendAllowanceMm)
+        : 0;
+      cutLengthMm = verticalEffectiveMm + horizontalEffectiveMm + bendAllowanceMm;
     } else {
       const wallHeightMm = lengthToMm(input.wallHeight, lengthUnit);
       cutLengthMm = Math.max(0, wallHeightMm - 2 * coverMm);
@@ -96,17 +100,17 @@
     const errors = [];
     if (!size) errors.push("Select a rebar size.");
     if (wallLengthMm <= 0) errors.push("Enter a wall length.");
-    if (wallLengthMm > 0 && clearWallLengthMm <= 0) errors.push("Concrete cover must be less than half the wall length.");
     if (spacingMm <= 0) errors.push("Enter spacing greater than zero.");
     if (cutLengthMm <= 0) errors.push("Check the dimensions and concrete cover.");
     if (stockLengthMm <= 0) errors.push("Enter a stock length.");
-    if (input.mode === "lshape" && cutLengthMm <= 0) errors.push("Bend deduction cannot exceed the leg lengths.");
 
     const stock = calculateStock(cutLengthMm, pieceCount, stockLengthMm);
     if (cutLengthMm > stockLengthMm + EPSILON_MM) errors.push("Cut length exceeds the selected stock length.");
 
-    const totalRebarLengthMm = pieceCount * cutLengthMm;
-    const estimatedWeightKg = size ? totalRebarLengthMm * weightKgPerMm(system, size) : 0;
+    const totalCutLengthMm = pieceCount * cutLengthMm;
+    const totalStockLengthMm = stock.barsRequired * stockLengthMm;
+    const weightBasisMm = input.mode === "lshape" ? totalStockLengthMm : totalCutLengthMm;
+    const estimatedWeightKg = size ? weightBasisMm * weightKgPerMm(system, size) : 0;
 
     return {
       valid: errors.length === 0,
@@ -114,20 +118,22 @@
       system,
       mode: input.mode === "lshape" ? "lshape" : "straight",
       size,
-      clearWallLengthMm,
       cutLengthMm,
-      bendAdjustmentMm,
+      bendAllowanceMm,
+      verticalEffectiveMm,
+      horizontalEffectiveMm,
       pieceCount,
       stockLengthMm,
       piecesPerBar: stock.piecesPerBar,
       barsRequired: stock.barsRequired,
-      remainingLengthMm: stock.remainingLengthMm,
-      remainingPerFullBarMm: stock.remainingPerFullBarMm,
-      totalRebarLengthMm,
+      remainingPerBarMm: stock.remainingPerBarMm,
+      totalRemainingMm: stock.totalRemainingMm,
+      totalCutLengthMm,
+      totalStockLengthMm,
       estimatedWeightKg,
       estimatedWeightLb: estimatedWeightKg / data.conversions.poundToKg
     };
   }
 
-  return Object.freeze({ calculate, calculateStock, countAtMaximumSpacing, getSize, lengthToMm, mmToLength });
+  return Object.freeze({ calculate, calculateStock, countAtSpacing, getSize, lengthToMm, mmToLength });
 });
