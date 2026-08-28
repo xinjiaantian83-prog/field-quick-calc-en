@@ -797,6 +797,22 @@ svg text {
   line-height: 1.5;
 }
 
+.monetization-panel { margin-top: 18px; padding: 14px; border: 1px solid #287c61; border-radius: 12px; background: #071a14; }
+.monetization-panel[hidden] { display: none !important; }
+.monetization-panel h3 { margin: 0 0 7px; color: #f1fff8; font-size: 16px; }
+.monetization-panel p { color: #9cbbae; font-size: 12px; line-height: 1.5; }
+.monetization-panel button { width: 100%; min-height: 46px; margin-top: 8px; border: 1px solid #20e58a; border-radius: 9px; background: #20e58a; color: #03140d; font: inherit; font-weight: 850; }
+.monetization-panel button.secondary { border-color: #53796b; background: #142b23; color: #effff7; }
+.monetization-panel button.privacy-options { border: 0; background: transparent; color: #7fffc0; text-decoration: underline; }
+.monetization-panel button:disabled { opacity: .5; }
+.tip-options { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(125, 255, 190, .2); }
+.tip-options button { width: calc(33.333% - 6px); min-height: 52px; margin-right: 5px; padding: 7px; vertical-align: top; font-size: 12px; }
+.tip-options button:last-of-type { margin-right: 0; }
+.tip-options span { display: block; margin-top: 2px; }
+.monetization-status { min-height: 18px; margin: 8px 0 0; }
+.monetization-status[data-kind="error"] { color: #ff9b9b; }
+.monetization-status[data-kind="success"] { color: #80ffc0; }
+
 @media (max-width: 360px) {
   .app {
     width: min(100% - 16px, 500px);

@@ -4,4 +4,6 @@
     <string name="title_activity_main">Field Quick Calc</string>
     <string name="package_name">com.genbatoolbox.fieldquickcalcnew</string>
     <string name="custom_url_scheme">com.genbatoolbox.fieldquickcalcnew</string>
+    <!-- Google test app ID. Replace with the production AdMob app ID before enabling monetization. -->
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
 </resources>

@@ -77,6 +77,20 @@
           </div>
           <div id="menuCustomizeList" class="customize-list"></div>
           <p id="customizeNotice" class="customize-notice" role="status" aria-live="polite"></p>
+          <section id="monetizationPanel" class="monetization-panel" hidden>
+            <h3>Support & purchases</h3>
+            <p data-pro-only hidden>Ad-free access is active.</p>
+            <button type="button" data-purchase="removeAds" data-free-only>Remove ads <span data-price="removeAds"></span></button>
+            <button type="button" class="secondary" data-restore-purchases>Restore purchases</button>
+            <div class="tip-options" aria-label="Optional tips">
+              <p>Enjoying Field Quick Calc? Leave an optional tip.</p>
+              <button type="button" data-tip="small">Small tip <span data-price="tip-small"></span></button>
+              <button type="button" data-tip="medium">Medium tip <span data-price="tip-medium"></span></button>
+              <button type="button" data-tip="large">Large tip <span data-price="tip-large"></span></button>
+            </div>
+            <button type="button" class="privacy-options" data-privacy-options>Ad privacy options</button>
+            <p id="monetizationStatus" class="monetization-status" role="status" aria-live="polite"></p>
+          </section>
         </section>
       </div>
     </section>
@@ -307,6 +321,8 @@
     </section>
   </div>
 
+  <script src="js/monetization-config.js"></script>
+  <script src="js/monetization.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
