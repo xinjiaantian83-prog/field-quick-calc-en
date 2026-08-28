@@ -58,6 +58,16 @@
           <span class="tool-title">Stair Layout</span>
           <span class="tool-sub">Rise, tread &amp; angle</span>
         </button>
+        <button class="tool-card" data-open="rebar" data-menu-id="rebar">
+          <span class="tool-num">05</span>
+          <svg class="tool-ico sketch-ico" viewBox="0 0 72 56" fill="none" stroke="#eafff6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M13 44 V14 H55 V44"/>
+            <path d="M25 44 V24 H43 V44"/>
+            <path d="M9 44 H61"/>
+          </svg>
+          <span class="tool-title">Rebar Estimator</span>
+          <span class="tool-sub">Cuts, stock bars &amp; weight</span>
+        </button>
       </main>
 
       <nav class="bottom-actions" aria-label="More tools">
@@ -292,6 +302,95 @@
       <p class="disclaimer">Results are estimates only. Always follow local codes, drawings, site conditions, and professional judgment.</p>
     </section>
 
+    <section id="rebar" class="screen rebar-screen">
+      <button class="back" data-open="home">← Back</button>
+      <header class="tool-header">
+        <p class="eyebrow">Cut list / stock takeoff</p>
+        <h2>Rebar Estimator</h2>
+        <p>Estimate rebar pieces, cut lengths, stock bars, remaining length, and weight.</p>
+      </header>
+
+      <div class="rebar-toolbar panel">
+        <fieldset class="rebar-fieldset">
+          <legend>Units</legend>
+          <div class="segmented compact" id="rebarSystemSwitch">
+            <button type="button" class="active" data-rebar-system="imperial">US / Imperial</button>
+            <button type="button" data-rebar-system="metric">Metric</button>
+          </div>
+        </fieldset>
+        <fieldset class="rebar-fieldset">
+          <legend>Layout</legend>
+          <div class="segmented compact" id="rebarModeSwitch">
+            <button type="button" class="active" data-rebar-mode="straight">Straight Wall</button>
+            <button type="button" data-rebar-mode="lshape">L-Shaped Wall</button>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="panel rebar-input-panel">
+        <div class="input-grid">
+          <label>Wall Length <span data-rebar-unit="length">ft</span><input id="rebarWallLength" data-rebar-input type="number" inputmode="decimal" min="0" step="any"></label>
+          <label id="rebarWallHeightField">Wall Height <span data-rebar-unit="length">ft</span><input id="rebarWallHeight" data-rebar-input type="number" inputmode="decimal" min="0" step="any"></label>
+          <label id="rebarVerticalField" hidden>Vertical Leg <span data-rebar-unit="length">ft</span><input id="rebarVerticalLeg" data-rebar-input type="number" inputmode="decimal" min="0" step="any"></label>
+          <label id="rebarHorizontalField" hidden>Horizontal Leg <span data-rebar-unit="length">ft</span><input id="rebarHorizontalLeg" data-rebar-input type="number" inputmode="decimal" min="0" step="any"></label>
+          <label>Concrete Cover <span data-rebar-unit="small">in</span><input id="rebarCover" data-rebar-input type="number" inputmode="decimal" min="0" step="any"></label>
+          <label>Spacing <span data-rebar-unit="small">in</span><input id="rebarSpacing" data-rebar-input type="number" inputmode="decimal" min="0" step="any"></label>
+          <label>Rebar Size <select id="rebarSize" data-rebar-input></select></label>
+          <label>Stock Length
+            <select id="rebarStockPreset" data-rebar-input></select>
+          </label>
+          <label id="rebarCustomStockField" hidden>Custom Stock Length <span data-rebar-unit="length">ft</span><input id="rebarCustomStock" data-rebar-input type="number" inputmode="decimal" min="0" step="any"></label>
+        </div>
+
+        <div id="rebarBendFields" class="rebar-bend-fields" hidden>
+          <label>Bend Adjustment
+            <select id="rebarBendMethod" data-rebar-input>
+              <option value="allowance">Add Allowance</option>
+              <option value="deduction">Subtract Deduction</option>
+            </select>
+          </label>
+          <label>Adjustment <span data-rebar-unit="small">in</span><input id="rebarBendAdjustment" data-rebar-input type="number" inputmode="decimal" min="0" step="any"></label>
+        </div>
+      </div>
+
+      <div class="diagram rebar-diagram">
+        <svg id="rebarStraightDiagram" viewBox="0 0 360 220" role="img" aria-label="Straight wall rebar layout">
+          <rect x="48" y="34" width="264" height="150" rx="4" class="rebar-concrete"/>
+          <line x1="76" y1="56" x2="76" y2="163" class="line-glow"/>
+          <line x1="128" y1="56" x2="128" y2="163" class="line-glow"/>
+          <line x1="180" y1="56" x2="180" y2="163" class="line-glow"/>
+          <line x1="232" y1="56" x2="232" y2="163" class="line-glow"/>
+          <line x1="284" y1="56" x2="284" y2="163" class="line-glow"/>
+          <line x1="76" y1="68" x2="284" y2="68" class="rebar-secondary"/>
+          <line x1="76" y1="151" x2="284" y2="151" class="rebar-secondary"/>
+          <text id="rebarStraightHeightLabel" x="180" y="207" text-anchor="middle">Cut length</text>
+          <text id="rebarStraightCountLabel" x="180" y="24" text-anchor="middle">Required pieces</text>
+        </svg>
+        <svg id="rebarLDiagram" viewBox="0 0 360 220" role="img" aria-label="L-shaped rebar cut layout" hidden>
+          <path d="M105 42 V166 Q105 184 123 184 H283" class="rebar-l-line"/>
+          <line x1="78" y1="42" x2="78" y2="166" class="measure"/>
+          <line x1="123" y1="205" x2="283" y2="205" class="measure"/>
+          <path d="M105 150 Q105 184 139 184" class="rebar-bend-mark"/>
+          <text id="rebarVerticalLabel" x="65" y="112" text-anchor="middle" transform="rotate(-90 65 112)">Vertical leg</text>
+          <text id="rebarHorizontalLabel" x="203" y="217" text-anchor="middle">Horizontal leg</text>
+          <text id="rebarBendLabel" x="145" y="151">Bend adjustment</text>
+          <text id="rebarTotalCutLabel" x="196" y="28" text-anchor="middle">Total cut length</text>
+        </svg>
+      </div>
+
+      <p id="rebarError" class="soft-notice rebar-error" role="alert" hidden></p>
+      <div class="results rebar-results">
+        <div class="result big"><span>Cut Length</span><strong id="rebarCutLength">--</strong><em id="rebarCutUnit">ft</em></div>
+        <div class="result"><span>Pieces Required</span><strong id="rebarPieceCount">--</strong><em>pcs</em></div>
+        <div class="result"><span>Pieces per Stock Bar</span><strong id="rebarPiecesPerBar">--</strong><em>pcs</em></div>
+        <div class="result"><span>Stock Bars Required</span><strong id="rebarBarsRequired">--</strong><em>bars</em></div>
+        <div class="result"><span>Remaining Length</span><strong id="rebarRemaining">--</strong><em id="rebarRemainingUnit">ft</em></div>
+        <div class="result"><span>Total Rebar Length</span><strong id="rebarTotalLength">--</strong><em id="rebarTotalUnit">ft</em></div>
+        <div class="result"><span>Estimated Weight</span><strong id="rebarWeight">--</strong><em id="rebarWeightUnit">lb</em></div>
+      </div>
+      <p class="disclaimer">For estimating and takeoff only. Bend details, laps, development length, waste factors, drawings, specifications, local codes, and supplier stock must be verified before ordering or fabrication.</p>
+    </section>
+
     <section id="materials" class="screen">
       <button class="back" data-open="home">← Back</button>
       <header class="tool-header">
@@ -321,6 +420,9 @@
     </section>
   </div>
 
+  <script src="js/rebar-data.js"></script>
+  <script src="js/rebar-calculator.js"></script>
+  <script src="js/rebar-ui.js"></script>
   <script src="js/monetization-config.js"></script>
   <script src="js/monetization.js"></script>
   <script src="js/app.js"></script>

@@ -4,8 +4,9 @@
   "description": "DIY-focused imperial jobsite calculator prototype",
   "main": "server.js",
   "scripts": {
-    "check": "node --check js/app.js",
-    "build": "npm run check && node scripts/build-capacitor-web.mjs",
+    "check": "node --check js/app.js && node --check js/rebar-data.js && node --check js/rebar-calculator.js && node --check js/rebar-ui.js",
+    "test": "node --test tests/*.test.cjs",
+    "build": "npm run check && npm test && node scripts/build-capacitor-web.mjs",
     "start": "node server.js",
     "cap:sync": "npm run build && npx cap sync",
     "cap:sync:ios": "npm run build && npx cap sync ios",

@@ -8,6 +8,7 @@ const homeMenuItems = [
   { id: "radiusCircle", label: "Radius & Arc" },
   { id: "slope", label: "Slope & Pitch" },
   { id: "stairs", label: "Stair Layout" },
+  { id: "rebar", label: "Rebar Estimator" },
   { id: "density", label: "Material Weight Guide" },
   { id: "notes", label: "Jobsite Notes" }
 ];
