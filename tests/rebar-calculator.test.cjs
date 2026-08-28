@@ -7,6 +7,12 @@ function near(actual, expected, tolerance = 1e-6) {
   assert.ok(Math.abs(actual - expected) <= tolerance, `${actual} is not within ${tolerance} of ${expected}`);
 }
 
+function assertMaterialBalance(result) {
+  assert.ok(result.actualRemainingMm >= 0, "actual remaining must not be negative");
+  near(result.totalStockLengthMm, result.totalCutLengthMm + result.actualRemainingMm, 1e-5);
+  near(result.totalRemainingMm, result.actualRemainingMm, 1e-8);
+}
+
 test("ASTM and metric tables contain sizes, weights, and automatic bend allowances", () => {
   assert.deepEqual(data.imperial.sizes.map((item) => item.label), ["#3", "#4", "#5", "#6", "#7", "#8"]);
   assert.deepEqual(data.imperial.sizes.map((item) => item.weightLbFt), [0.376, 0.668, 1.043, 1.502, 2.044, 2.67]);
@@ -27,9 +33,10 @@ test("straight wall follows the Japanese takeoff structure", () => {
   assert.equal(result.piecesPerBar, 2);
   assert.equal(result.barsRequired, 11);
   near(calc.mmToLength(result.remainingPerBarMm, "ft"), 4 + 8 / 12);
-  near(calc.mmToLength(result.totalRemainingMm, "ft"), 51 + 4 / 12);
+  near(calc.mmToLength(result.actualRemainingMm, "ft"), 59);
   near(calc.mmToLength(result.totalStockLengthMm, "ft"), 220);
   near(result.estimatedWeightLb, 21 * (7 + 8 / 12) * 0.668, 1e-8);
+  assertMaterialBalance(result);
 });
 
 test("L-shaped wall calculates one bar, stock yield, total remainder, and purchased weight", () => {
@@ -47,9 +54,36 @@ test("L-shaped wall calculates one bar, stock yield, total remainder, and purcha
   assert.equal(result.piecesPerBar, 5);
   assert.equal(result.barsRequired, 11);
   near(calc.mmToLength(result.remainingPerBarMm, "m"), 0.7);
-  near(calc.mmToLength(result.totalRemainingMm, "m"), 7.7);
+  near(calc.mmToLength(result.actualRemainingMm, "m"), 16.74);
   near(calc.mmToLength(result.totalStockLengthMm, "m"), 132);
   near(result.estimatedWeightKg, 132 * 0.888, 1e-8);
+  assertMaterialBalance(result);
+});
+
+test("actual remaining includes the unused portion of a partially used final stock bar", () => {
+  const result = calc.calculate({
+    system: "imperial", mode: "lshape", sizeId: "us4",
+    wallLength: 20, verticalLeg: 6, horizontalLeg: 3,
+    cover: 2, spacing: 12, stockLength: 20
+  });
+  assert.equal(result.pieceCount, 21);
+  assert.equal(result.piecesPerBar, 2);
+  assert.equal(result.barsRequired, 11);
+  near(calc.mmToLength(result.cutLengthMm, "ft"), 8.875);
+  near(calc.mmToLength(result.actualRemainingMm, "ft"), 33.625);
+  assertMaterialBalance(result);
+});
+
+test("actual remaining balances when required pieces divide evenly across stock bars", () => {
+  const result = calc.calculate({
+    system: "metric", mode: "straight", sizeId: "m10",
+    wallLength: 10, wallHeight: 2, cover: 0, spacing: 200, stockLength: 6
+  });
+  assert.equal(result.pieceCount, 51);
+  assert.equal(result.piecesPerBar, 3);
+  assert.equal(result.barsRequired, 17);
+  near(calc.mmToLength(result.actualRemainingMm, "m"), 0);
+  assertMaterialBalance(result);
 });
 
 test("custom stock and every supported size use the correct unit weight", () => {
@@ -90,5 +124,7 @@ test("equivalent unit inputs preserve count and stock decisions", () => {
   assert.equal(metric.pieceCount, imperial.pieceCount);
   assert.equal(metric.piecesPerBar, imperial.piecesPerBar);
   assert.equal(metric.barsRequired, imperial.barsRequired);
-  near(metric.totalRemainingMm, imperial.totalRemainingMm, 1e-5);
+  near(metric.actualRemainingMm, imperial.actualRemainingMm, 1e-5);
+  assertMaterialBalance(imperial);
+  assertMaterialBalance(metric);
 });

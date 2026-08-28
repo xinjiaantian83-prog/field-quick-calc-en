@@ -167,7 +167,7 @@
     setText("rebarPiecesPerBar", result.piecesPerBar || "--");
     setText("rebarBarsRequired", result.barsRequired || "--");
     setText("rebarRemainingPerBar", result.barsRequired ? outputLength(result.remainingPerBarMm) : "--");
-    setText("rebarTotalRemaining", result.barsRequired ? outputLength(result.totalRemainingMm) : "--");
+    setText("rebarTotalRemaining", result.barsRequired ? outputLength(result.actualRemainingMm) : "--");
     setText("rebarTotalLength", result.totalStockLengthMm > 0 ? outputLength(result.totalStockLengthMm) : "--");
     setText("rebarWeight", result.estimatedWeightKg > 0 ? format(state.system === "imperial" ? result.estimatedWeightLb : result.estimatedWeightKg, 1) : "--");
     ["rebarCutUnit", "rebarRemainingPerBarUnit", "rebarTotalRemainingUnit", "rebarTotalUnit"].forEach((id) => setText(id, lengthUnit));

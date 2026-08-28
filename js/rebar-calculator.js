@@ -53,18 +53,20 @@
 
   function calculateStock(cutLengthMm, pieceCount, stockLengthMm) {
     if (cutLengthMm <= EPSILON_MM || pieceCount < 1 || stockLengthMm <= EPSILON_MM) {
-      return { piecesPerBar: 0, barsRequired: 0, remainingPerBarMm: 0, totalRemainingMm: 0 };
+      return { piecesPerBar: 0, barsRequired: 0, remainingPerBarMm: 0, actualRemainingMm: 0 };
     }
     const piecesPerBar = Math.floor((stockLengthMm + EPSILON_MM) / cutLengthMm);
     if (piecesPerBar < 1) {
-      return { piecesPerBar: 0, barsRequired: 0, remainingPerBarMm: 0, totalRemainingMm: 0 };
+      return { piecesPerBar: 0, barsRequired: 0, remainingPerBarMm: 0, actualRemainingMm: 0 };
     }
     const barsRequired = Math.ceil(pieceCount / piecesPerBar);
+    const totalStockLengthMm = barsRequired * stockLengthMm;
+    const usedLengthMm = pieceCount * cutLengthMm;
     return {
       piecesPerBar,
       barsRequired,
       remainingPerBarMm: Math.max(0, stockLengthMm - piecesPerBar * cutLengthMm),
-      totalRemainingMm: Math.max(0, (stockLengthMm - piecesPerBar * cutLengthMm) * barsRequired)
+      actualRemainingMm: Math.max(0, totalStockLengthMm - usedLengthMm)
     };
   }
 
@@ -127,7 +129,9 @@
       piecesPerBar: stock.piecesPerBar,
       barsRequired: stock.barsRequired,
       remainingPerBarMm: stock.remainingPerBarMm,
-      totalRemainingMm: stock.totalRemainingMm,
+      actualRemainingMm: stock.actualRemainingMm,
+      // Retain the original property as an API-compatible alias with the corrected definition.
+      totalRemainingMm: stock.actualRemainingMm,
       totalCutLengthMm,
       totalStockLengthMm,
       estimatedWeightKg,
