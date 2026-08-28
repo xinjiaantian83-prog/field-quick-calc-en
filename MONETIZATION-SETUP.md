@@ -43,3 +43,5 @@ Replace the placeholder publisher ID in `app-ads.txt.example`, then publish it a
 6. Set `testMode: false` and `monetizationEnabled: true`, then submit new builds.
 
 Events: `ad_banner_loaded`, `ad_banner_failed`, `ad_banner_impression`, `ad_banner_click`, `remove_ads_viewed`, `remove_ads_purchase_started`, `remove_ads_purchase_success`, `remove_ads_purchase_failed`, `restore_purchase_started`, `restore_purchase_success`, `restore_purchase_empty`, `restore_purchase_failed`, `tip_viewed`, `tip_purchase_started`, `tip_purchase_success`, `tip_purchase_failed`.
+
+See `MONETIZATION-CONSOLE-CHECKLIST.md` for console-only actions and copy-ready product metadata. See `MONETIZATION-DEVICE-TEST-CHECKLIST.md` for device validation. The same console checklist documents the scripts for identifier insertion and app-ads.txt generation.
